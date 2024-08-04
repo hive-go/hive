@@ -54,7 +54,7 @@ func main() {
 }
 ```
 
-`src/modules/user.module.go`
+`src/modules/user/user.module.go`
 
 ```go
 package user
@@ -70,7 +70,7 @@ func init() {
 }
 ```
 
-`src/modules/user.controller.go`
+`src/modules/user/user.controller.go`
 
 ```go
 package user
@@ -100,7 +100,7 @@ func init() {
 }
 ```
 
-`src/modules/user.service.go`
+`src/modules/user/user.service.go`
 
 ```go
 package user
