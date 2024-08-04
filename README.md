@@ -1,8 +1,8 @@
 <h1 align="center">
   <a href="#">
     <picture>
-      <source height="125" media="(prefers-color-scheme: dark)" srcset="./assets/logo.jpg">
-      <img height="125" alt="Hive" src="./assets/logo.jpg">
+      <source height="125" media="(prefers-color-scheme: dark)" srcset="./assets/logo.jpg" style="border-radius:15px">
+      <img height="125" alt="Hive" src="./assets/logo.jpg" style="border-radius:15px">
     </picture>
   </a>
   <br>
