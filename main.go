@@ -1,6 +1,9 @@
 package hive
 
 import (
+	"fmt"
+	"time"
+
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -11,13 +14,24 @@ type GoNest struct {
 }
 
 func New() (instance *GoNest) {
-	fiber := fiber.New()
+	fiber := fiber.New(fiber.Config{
+		DisableStartupMessage: true,
+	})
 	app := GoNest{}
 	app.fiber = fiber
 	return &app
 }
 
 func (n *GoNest) Listen(port string) {
+
+	var Green = "\033[32m"
+	var Reset = "\033[0m"
+
+	now := time.Now()
+
+	fmt.Print("\033[H\033[2J")
+
+	fmt.Println(Green + "[Hive] - " + Reset + now.Format("02/01/2006, 15:04:05") + Green + " LOG [Hive] Starting Hive application..." + Reset)
 
 	for _, module := range n.modules {
 		for _, controller := range module.controllers {
@@ -27,7 +41,8 @@ func (n *GoNest) Listen(port string) {
 		}
 	}
 
-	n.fiber.Listen(port)
+	fmt.Println(Green + "[Hive] - " + Reset + now.Format("02/01/2006, 15:04:05") + Green + " LOG [Hive] Application started on port " + port + Reset)
+	n.fiber.Listen("127.0.0.1:" + port)
 }
 
 func CreateModule() (module Module) {
