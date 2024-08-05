@@ -34,7 +34,22 @@ This command fetches the Hive package and adds it to your project's dependencies
 
 ## ⚡️ Quickstart
 
-Getting started with Hive is easy. Here's a basic example to create a simple web server that responds with "Hello, World 👋!" on the root path. This example demonstrates initializing a new Fiber app, setting up a route, and starting the server.
+Getting started with Hive is easy. Here's a basic example to create a simple web server. This example demonstrates initializing a new Fiber app, setting up a route for user, and starting the server.
+
+
+
+Suggestion folder structure
+```bash
+src
+ ├── modules
+ │   └── user
+ │       ├── user.module.go
+ │       ├── user.controller.go
+ │       └── user.service.go
+ ├── main.go
+ ├── go.mod
+ └── go.sum
+```
 
 `main.go`
 ```go
