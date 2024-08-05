@@ -2,6 +2,7 @@ package hive
 
 import (
 	"fmt"
+	"os/exec"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -29,7 +30,7 @@ func (n *GoNest) Listen(port string) {
 
 	now := time.Now()
 
-	fmt.Print("\033[H\033[2J")
+	exec.Command("clear")
 
 	fmt.Println(Green + "[Hive] - " + Reset + now.Format("02/01/2006, 15:04:05") + Green + " LOG [Hive] Starting Hive application..." + Reset)
 
