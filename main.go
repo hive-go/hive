@@ -8,6 +8,9 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// Version of current hive package
+const Version = "1.0.1"
+
 type GoNest struct {
 	fiberApp *fiber.App
 	modules  []Module
