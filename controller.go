@@ -1,8 +1,6 @@
 package hive
 
 import (
-	"fmt"
-
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -11,10 +9,19 @@ type HandleType interface {
 }
 
 type Controller struct {
-	routes []func(app *GoNest)
+	routes []func(app *fiber.App, prefix string)
+	config ControllerConfig
 }
 
-func (c *Controller) appendRoute(route func(app *GoNest)) {
+type ControllerConfig struct {
+	Prefix string
+}
+
+func (c *Controller) SetConfig(config ControllerConfig) {
+	c.config = config
+}
+
+func (c *Controller) appendRoute(route func(app *fiber.App, prefix string)) {
 	c.routes = append(c.routes, route)
 }
 
@@ -25,48 +32,46 @@ func CreateController() (controller Controller) {
 
 func (c *Controller) Get(
 	path string,
-	handler func(*fiber.Ctx) any,
+	handler func(*fiber.Ctx) (interface{}, error),
 ) {
 
 	var handler2 = func(ctx *fiber.Ctx) error {
-		result := handler(ctx)
+		result, err := handler(ctx)
 
 		if result == nil {
 			return nil
 		}
 
-		//get type of result
-		var text = fmt.Sprintf("%T", result)
-
-		print("Type: ", text)
+		if err != nil {
+			return ctx.SendString(err.Error())
+		}
 
 		switch v := result.(type) {
 		case Map:
 			return ctx.JSON(v)
 		case string:
 			return ctx.SendString(v)
-		case error:
-			return ctx.SendString(v.Error())
 		}
 
 		return nil
 	}
 
-	c.appendRoute(func(app *GoNest) {
-		app.fiber.Get(path, handler2)
+	c.appendRoute(func(app *fiber.App, prefix string) {
+		app.Get(prefix+path, handler2)
 	})
 }
 
 func (c *Controller) Post(
 	path string,
-	handler func(*fiber.Ctx) interface{},
+	handler func(*fiber.Ctx) (interface{}, error),
 ) {
 
 	var handler2 = func(ctx *fiber.Ctx) error {
-		result := handler(ctx)
+		result, err := handler(ctx)
 
-		if result == nil {
-			return nil
+		if err != nil {
+			//set status code and error
+			return err
 		}
 
 		switch v := result.(type) {
@@ -74,28 +79,30 @@ func (c *Controller) Post(
 			return ctx.JSON(v)
 		case string:
 			return ctx.SendString(v)
-		case error:
-			return ctx.SendString(v.Error())
 		}
 
-		return nil
+		return ctx.JSON(result)
 	}
 
-	c.appendRoute(func(app *GoNest) {
-		app.fiber.Post(path, handler2)
+	c.appendRoute(func(app *fiber.App, prefix string) {
+		app.Post(prefix+path, handler2)
 	})
 }
 
 func (c *Controller) Put(
 	path string,
-	handler func(*fiber.Ctx) interface{},
+	handler func(*fiber.Ctx) (interface{}, error),
 ) {
 
 	var handler2 = func(ctx *fiber.Ctx) error {
-		result := handler(ctx)
+		result, err := handler(ctx)
 
 		if result == nil {
 			return nil
+		}
+
+		if err != nil {
+			return ctx.SendString(err.Error())
 		}
 
 		switch v := result.(type) {
@@ -103,28 +110,30 @@ func (c *Controller) Put(
 			return ctx.JSON(v)
 		case string:
 			return ctx.SendString(v)
-		case error:
-			return ctx.SendString(v.Error())
 		}
 
 		return nil
 	}
 
-	c.appendRoute(func(app *GoNest) {
-		app.fiber.Put(path, handler2)
+	c.appendRoute(func(app *fiber.App, prefix string) {
+		app.Put(prefix+path, handler2)
 	})
 }
 
 func (c *Controller) Delete(
 	path string,
-	handler func(*fiber.Ctx) interface{},
+	handler func(*fiber.Ctx) (interface{}, error),
 ) {
 
 	var handler2 = func(ctx *fiber.Ctx) error {
-		result := handler(ctx)
+		result, err := handler(ctx)
 
 		if result == nil {
 			return nil
+		}
+
+		if err != nil {
+			return ctx.SendString(err.Error())
 		}
 
 		switch v := result.(type) {
@@ -132,14 +141,12 @@ func (c *Controller) Delete(
 			return ctx.JSON(v)
 		case string:
 			return ctx.SendString(v)
-		case error:
-			return ctx.SendString(v.Error())
 		}
 
 		return nil
 	}
 
-	c.appendRoute(func(app *GoNest) {
-		app.fiber.Delete(path, handler2)
+	c.appendRoute(func(app *fiber.App, prefix string) {
+		app.Delete(prefix+path, handler2)
 	})
 }

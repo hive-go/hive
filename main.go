@@ -9,17 +9,16 @@ import (
 )
 
 type GoNest struct {
-	fiber   *fiber.App
-	modules []Module
-	Ctx     *fiber.Ctx
+	fiberApp *fiber.App
+	modules  []Module
 }
 
-func New() (instance *GoNest) {
-	fiber := fiber.New(fiber.Config{
-		DisableStartupMessage: true,
-	})
+type Config = fiber.Config
+
+func New(config ...Config) (instance *GoNest) {
+	fiber := fiber.New(config...)
 	app := GoNest{}
-	app.fiber = fiber
+	app.fiberApp = fiber
 	return &app
 }
 
@@ -35,15 +34,29 @@ func (n *GoNest) Listen(port string) {
 	fmt.Println(Green + "[Hive] - " + Reset + now.Format("02/01/2006, 15:04:05") + Green + " LOG [Hive] Starting Hive application..." + Reset)
 
 	for _, module := range n.modules {
+
+		var prefixModule = ""
+
+		if module.config.Prefix != "" {
+			prefixModule = module.config.Prefix
+		}
+
 		for _, controller := range module.controllers {
+
+			var prefixController = ""
+
+			if controller.config.Prefix != "" {
+				prefixController = controller.config.Prefix
+			}
 			for _, generateRoute := range controller.routes {
-				generateRoute(n)
+
+				generateRoute(n.fiberApp, prefixModule+prefixController)
 			}
 		}
 	}
 
 	fmt.Println(Green + "[Hive] - " + Reset + now.Format("02/01/2006, 15:04:05") + Green + " LOG [Hive] Application started on port " + port + Reset)
-	n.fiber.Listen("127.0.0.1:" + port)
+	n.fiberApp.Listen("127.0.0.1:" + port)
 }
 
 func CreateModule() (module Module) {
