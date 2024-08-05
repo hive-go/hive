@@ -27,7 +27,7 @@ To learn more about Go modules and how they work, you can check out the [Using G
 After setting up your project, you can install Hive with the `go get` command:
 
 ```bash
-go get -u https://github.com/hive-go/hive
+go get -u github.com/hive-go/hive
 ```
 
 This command fetches the Hive package and adds it to your project's dependencies, allowing you to start building your web applications with Hive.
