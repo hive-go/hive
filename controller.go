@@ -34,30 +34,8 @@ func (c *Controller) Get(
 	path string,
 	handler func(*fiber.Ctx) (interface{}, error),
 ) {
-
-	var handler2 = func(ctx *fiber.Ctx) error {
-		result, err := handler(ctx)
-
-		if result == nil {
-			return nil
-		}
-
-		if err != nil {
-			return ctx.SendString(err.Error())
-		}
-
-		switch v := result.(type) {
-		case Map:
-			return ctx.JSON(v)
-		case string:
-			return ctx.SendString(v)
-		}
-
-		return nil
-	}
-
 	c.appendRoute(func(app *fiber.App, prefix string) {
-		app.Get(prefix+path, handler2)
+		app.Get(prefix+path, generateHandlerOfCallback(handler))
 	})
 }
 
@@ -65,12 +43,35 @@ func (c *Controller) Post(
 	path string,
 	handler func(*fiber.Ctx) (interface{}, error),
 ) {
+	c.appendRoute(func(app *fiber.App, prefix string) {
+		app.Post(prefix+path, generateHandlerOfCallback(handler))
+	})
+}
 
-	var handler2 = func(ctx *fiber.Ctx) error {
-		result, err := handler(ctx)
+func (c *Controller) Put(
+	path string,
+	handler func(*fiber.Ctx) (interface{}, error),
+) {
+	c.appendRoute(func(app *fiber.App, prefix string) {
+		app.Put(prefix+path, generateHandlerOfCallback(handler))
+	})
+}
+
+func (c *Controller) Delete(
+	path string,
+	handler func(*fiber.Ctx) (interface{}, error),
+) {
+	c.appendRoute(func(app *fiber.App, prefix string) {
+		app.Delete(prefix+path, generateHandlerOfCallback(handler))
+	})
+}
+
+func generateHandlerOfCallback(callback func(ctx *fiber.Ctx) (any, error)) func(ctx *fiber.Ctx) error {
+
+	var handler = func(ctx *fiber.Ctx) error {
+		result, err := callback(ctx)
 
 		if err != nil {
-			//set status code and error
 			return err
 		}
 
@@ -84,69 +85,5 @@ func (c *Controller) Post(
 		return ctx.JSON(result)
 	}
 
-	c.appendRoute(func(app *fiber.App, prefix string) {
-		app.Post(prefix+path, handler2)
-	})
-}
-
-func (c *Controller) Put(
-	path string,
-	handler func(*fiber.Ctx) (interface{}, error),
-) {
-
-	var handler2 = func(ctx *fiber.Ctx) error {
-		result, err := handler(ctx)
-
-		if result == nil {
-			return nil
-		}
-
-		if err != nil {
-			return ctx.SendString(err.Error())
-		}
-
-		switch v := result.(type) {
-		case map[string]interface{}:
-			return ctx.JSON(v)
-		case string:
-			return ctx.SendString(v)
-		}
-
-		return nil
-	}
-
-	c.appendRoute(func(app *fiber.App, prefix string) {
-		app.Put(prefix+path, handler2)
-	})
-}
-
-func (c *Controller) Delete(
-	path string,
-	handler func(*fiber.Ctx) (interface{}, error),
-) {
-
-	var handler2 = func(ctx *fiber.Ctx) error {
-		result, err := handler(ctx)
-
-		if result == nil {
-			return nil
-		}
-
-		if err != nil {
-			return ctx.SendString(err.Error())
-		}
-
-		switch v := result.(type) {
-		case map[string]interface{}:
-			return ctx.JSON(v)
-		case string:
-			return ctx.SendString(v)
-		}
-
-		return nil
-	}
-
-	c.appendRoute(func(app *fiber.App, prefix string) {
-		app.Delete(prefix+path, handler2)
-	})
+	return handler
 }
