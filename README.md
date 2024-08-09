@@ -148,6 +148,45 @@ func (u *UserServiceT) DeleteUser(c *hive.Ctx) string {
 ```
 
 
+## ⚙️ Using Hive CLI to Work Faster
+
+
+```bash
+go install github.com/hive-go/hive-cli/
+```
+
+## ⚡️ Quickstart
+
+Getting started with Hive Cli is easy. Here's a basic example to create User Module
+
+```bash
+  hive-cli generate_resource user
+```
+
+Result in folder structure
+```bash
+
+ ├── src
+ │   └── modules
+ │       └── user
+ │           ├── user.module.go
+ │           ├── user.controller.go
+ │           └── user.service.go
+ ├── main.go
+ ├── go.mod
+ └── go.sum
+```
+
+ <a href="https://github.com/hive-go/example-project">
+📚 Show more code examples
+ </a>
+
+
+
+
+
+
+
 
 This simple server is easy to set up and run. It introduces the core concepts of Hive: app initialization, route definition, and starting the server. Just run this Go program, and visit `http://localhost:3000/user` in your browser to see the message.
 
