@@ -10,19 +10,19 @@ func generateSwagger(modules *[]Module) {
 
 	stringToSave := generateString(modules)
 
-	for _, module := range *modules {
-		for _, controller := range module.controllers {
-			for _, route := range controller.routes {
-				if route.metadata["body"] != nil {
-					println("Body fields: ")
-					allFields := GetAllFieldsOfStruct(route.metadata["body"])
-					for _, field := range allFields {
-						println(field.name + " - " + field.type_field)
-					}
-				}
-			}
-		}
-	}
+	// for _, module := range *modules {
+	// 	for _, controller := range module.controllers {
+	// 		for _, route := range controller.routes {
+	// 			if route.metadata["body"] != nil {
+	// 				println("Body fields: ")
+	// 				allFields := GetAllFieldsOfStruct(route.metadata["body"])
+	// 				for _, field := range allFields {
+	// 					println(field.name + " - " + field.type_field)
+	// 				}
+	// 			}
+	// 		}
+	// 	}
+	// }
 
 	//save to file
 	f, err := os.Create("swagger.json")
