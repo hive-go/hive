@@ -61,7 +61,7 @@ func (n *GoNest) Listen(addr string) {
 
 	generateSwagger(&n.modules)
 	now := time.Now()
-	fmt.Println(Green + "[Hive] - " + Reset + now.Format("02/01/2006, 15:04:05") + Green + " LOG [Hive] Application started on port " + addr + Reset)
+	fmt.Println(Green + "[Hive] - " + Reset + now.Format("02/01/2006, 15:04:05") + Green + " LOG [Hive] Application started on Address " + addr + Reset)
 
 	n.App.Get("/api/*", swagger.New(swagger.Config{
 		ConfigURL: "/swagger",
