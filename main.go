@@ -32,7 +32,7 @@ func New(config ...Config) (instance *GoNest) {
 	return &app
 }
 
-func (n *GoNest) Listen(port string) {
+func (n *GoNest) Listen(addr string) {
 
 	exec.Command("clear")
 
@@ -61,7 +61,7 @@ func (n *GoNest) Listen(port string) {
 
 	generateSwagger(&n.modules)
 	now := time.Now()
-	fmt.Println(Green + "[Hive] - " + Reset + now.Format("02/01/2006, 15:04:05") + Green + " LOG [Hive] Application started on port " + port + Reset)
+	fmt.Println(Green + "[Hive] - " + Reset + now.Format("02/01/2006, 15:04:05") + Green + " LOG [Hive] Application started on port " + addr + Reset)
 
 	n.App.Get("/api/*", swagger.New(swagger.Config{
 		ConfigURL: "/swagger",
@@ -74,9 +74,9 @@ func (n *GoNest) Listen(port string) {
 	})
 
 	//open browser in swagger
-	open("http://localhost:" + port + "/api")
+	open(addr + "/api")
 
-	n.App.Listen("127.0.0.1:" + port)
+	n.App.Listen(addr)
 }
 
 func open(url string) error {
