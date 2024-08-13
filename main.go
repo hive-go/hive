@@ -3,7 +3,6 @@ package hive
 import (
 	"fmt"
 	"os/exec"
-	"runtime"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -63,7 +62,6 @@ func (n *GoNest) Listen(addr string) {
 				route.function(n.App, prefixModule+prefixController)
 			}
 		}
-
 	}
 
 	now := time.Now()
@@ -84,40 +82,15 @@ func (n *GoNest) Listen(addr string) {
 			URL:       "/swagger",
 		}))
 
-		//give file at root ./swagger.json
 		n.App.Get("/swagger", func(c *fiber.Ctx) error {
 			return c.SendFile("./swagger.json")
 		})
 	}
 
+	n.modules = nil
+	n.config = Config{}
+
 	n.App.Listen(addr)
-}
-
-func open(url string) error {
-	var cmd string
-	var args []string
-
-	switch runtime.GOOS {
-	case "windows":
-		cmd = "cmd"
-		args = []string{"/c", "start"}
-	case "darwin":
-		cmd = "open"
-	default: // "linux", "freebsd", "openbsd", "netbsd"
-		cmd = "xdg-open"
-	}
-	args = append(args, url)
-	return exec.Command(cmd, args...).Start()
-}
-
-func CreateModule() (module Module) {
-	module = Module{}
-	return module
-}
-
-func CreateService() (service Service) {
-	service = Service{}
-	return service
 }
 
 func (n *GoNest) AddModule(module Module) {
