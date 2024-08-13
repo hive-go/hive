@@ -16,19 +16,26 @@ const Version = "1.0.1"
 type GoNest struct {
 	*fiber.App
 	modules []Module
+	config  Config
 }
 
-type Config = fiber.Config
+type Config struct {
+	FiberConfig   fiber.Config
+	SwaggerConfig SwaggerConfig
+}
 
 var Green = "\033[32m"
 var Reset = "\033[0m"
 
-func New(config ...Config) (instance *GoNest) {
+func New(config Config) (instance *GoNest) {
 	now := time.Now()
 	fmt.Println(Green + "\n[Hive] - " + Reset + now.Format("02/01/2006, 15:04:05") + Green + " LOG [Hive] Starting Hive application..." + Reset)
-	fiber := fiber.New(config...)
+
+	fiber := fiber.New(config.FiberConfig)
+
 	app := GoNest{}
 	app.App = fiber
+	app.config = config
 	return &app
 }
 
@@ -59,22 +66,29 @@ func (n *GoNest) Listen(addr string) {
 
 	}
 
-	generateSwagger(&n.modules)
 	now := time.Now()
 	fmt.Println(Green + "[Hive] - " + Reset + now.Format("02/01/2006, 15:04:05") + Green + " LOG [Hive] Application started on Address " + addr + Reset)
 
-	n.App.Get("/api/*", swagger.New(swagger.Config{
-		ConfigURL: "/swagger",
-		URL:       "/swagger",
-	}))
+	if n.config.SwaggerConfig.Enabled {
+		generateSwagger(n)
+		path := "/api"
 
-	//give file at root ./swagger.json
-	n.App.Get("/swagger", func(c *fiber.Ctx) error {
-		return c.SendFile("./swagger.json")
-	})
+		if n.config.SwaggerConfig.Path != "" {
+			path = n.config.SwaggerConfig.Path
+		}
 
-	//open browser in swagger
-	open(addr + "/api")
+		fullPath := path + "/*"
+
+		n.App.Get(fullPath, swagger.New(swagger.Config{
+			ConfigURL: "/swagger",
+			URL:       "/swagger",
+		}))
+
+		//give file at root ./swagger.json
+		n.App.Get("/swagger", func(c *fiber.Ctx) error {
+			return c.SendFile("./swagger.json")
+		})
+	}
 
 	n.App.Listen(addr)
 }

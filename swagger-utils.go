@@ -7,6 +7,7 @@ import (
 )
 
 func CreateMainOpenAiFile(
+	swaggerConfig SwaggerConfig,
 	configs ...string,
 ) string {
 
@@ -25,15 +26,37 @@ func CreateMainOpenAiFile(
 		}
 	}
 
+	title := "Documentação API Template NestJS"
+	description := ""
+	version := "1.0.0"
+
+	println("TITLEE - ", swaggerConfig.Title)
+
+	if swaggerConfig.Title != "" {
+		title = swaggerConfig.Title
+	}
+
+	if swaggerConfig.Description != "" {
+		description = swaggerConfig.Description
+	}
+
+	if swaggerConfig.Version != "" {
+		version = swaggerConfig.Version
+	}
+
 	text := fmt.Sprintf(`{
 	"openapi": "3.0.0",
 	"info": {
-        "title": "Documentação API Template NestJS",
-        "description": "",
-        "version": "1.0.0",
-        "contact": {}
+        "title": "%v",
+        "description": "%v",
+        "version": "%v"
   }%v
-}`, configsMixed)
+}`,
+		title,
+		description,
+		version,
+		configsMixed,
+	)
 
 	return text
 }
