@@ -68,7 +68,8 @@ func (n *GoNest) Listen(addr string) {
 	fmt.Println(Green + "[Hive] - " + Reset + now.Format("02/01/2006, 15:04:05") + Green + " LOG [Hive] Application started on Address " + addr + Reset)
 
 	if n.config.SwaggerConfig.Enabled {
-		generateSwagger(n)
+		// generateSwagger(n)
+		GenerateSwaggerV2(n)
 		path := "/api"
 
 		if n.config.SwaggerConfig.Path != "" {

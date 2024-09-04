@@ -132,7 +132,7 @@ func (c *Controller) ParseBody(
 		body := reflect.New(reflect.TypeOf(bodyInterface)).Interface()
 
 		if err := ctx.BodyParser(body); err != nil {
-			return fiber.NewError(fiber.StatusNotFound, "BODY_PARSING_ERROR")
+			return fiber.NewError(fiber.StatusNotFound, "BODY_PARSING_ERROR - " + err.Error())	
 		}
 
 		if errs := myValidator.Validate(body); len(errs) > 0 && errs[0].Error {
