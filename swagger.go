@@ -174,7 +174,13 @@ func generateStringV2(n *GoNest) string {
 			method := method.(map[string]interface{})
 			lowerCaseMethod := strings.ToLower(method["method"].(string))
 
-			ControllerTag := method["controller_tag"].(string)
+			//if has method["controller_tag"].(string) then add if not add ""
+
+			ControllerTag := ""
+
+			if method["controller_tag"] != nil {
+				ControllerTag = method["controller_tag"].(string)
+			}
 
 			Responses := make(map[string]PathMethodConfigResponse)
 
