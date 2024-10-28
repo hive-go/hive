@@ -68,7 +68,6 @@ func (n *GoNest) Listen(addr string) {
 	fmt.Println(Green + "[Hive] - " + Reset + now.Format("02/01/2006, 15:04:05") + Green + " LOG [Hive] Application started on Address " + addr + Reset)
 
 	if n.config.SwaggerConfig.Enabled {
-		// generateSwagger(n)
 		GenerateSwaggerV2(n)
 		path := "/api"
 
@@ -79,11 +78,10 @@ func (n *GoNest) Listen(addr string) {
 		fullPath := path + "/*"
 
 		n.App.Get(fullPath, swagger.New(swagger.Config{
-			ConfigURL: "/swagger",
-			URL:       "/swagger",
+			URL: "/swagger/swagger.json",
 		}))
 
-		n.App.Get("/swagger", func(c *fiber.Ctx) error {
+		n.App.Get("/swagger/swagger.json", func(c *fiber.Ctx) error {
 			return c.SendFile("./swagger.json")
 		})
 	}
